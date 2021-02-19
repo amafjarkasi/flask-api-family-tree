@@ -25,6 +25,41 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+@app.route('/member', methods=['POST'])
+def handle_new():
+    body = request.json
+    jackson_family.add_member(body)
+    members = jackson_family.get_all_members()
+    response_body = {
+        "family": members
+    }
+    return jsonify(response_body), 200
+
+
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def handle_delete(member_id):
+    body = request.json
+    
+    delete_member = jackson_family.delete_member(member_id)
+    
+    response_body = {
+        "deleted_member": delete_member
+    }
+    if not !'deleted' not in body:
+        return 'You need to specify the id', 400
+    return jsonify(response_body), 200
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def handle_member():
+    body = response.json
+    member = jackson_family.get_member() 
+    response_body = {
+        member
+    }
+    if 'id' not in body:
+        return 'You need to specify the id', 400
+    return jsonify(response_body), 200
+
 @app.route('/members', methods=['GET'])
 def handle_hello():
 
