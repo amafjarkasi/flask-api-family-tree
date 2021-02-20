@@ -39,25 +39,20 @@ def handle_new():
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def handle_delete(member_id):
     body = request.json
-    
     delete_member = jackson_family.delete_member(member_id)
-    
     response_body = {
         "deleted_member": delete_member
     }
-    if not !'deleted' not in body:
-        return 'You need to specify the id', 400
+    if not delete_member:
+        return 'The member does not exist', 400
     return jsonify(response_body), 200
 
 @app.route('/member/<int:member_id>', methods=['GET'])
-def handle_member():
-    body = response.json
-    member = jackson_family.get_member() 
+def handle_member(member_id):
+    member = jackson_family.get_member(member_id) 
     response_body = {
-        member
+        "member": member
     }
-    if 'id' not in body:
-        return 'You need to specify the id', 400
     return jsonify(response_body), 200
 
 @app.route('/members', methods=['GET'])
